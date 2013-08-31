@@ -10,8 +10,9 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 int lcd_key     = 0;
 int adc_key_in  = 0;
-float target_volume = 23;
-float current_volume = 0;
+float current_volume = 0;                //Current total volume passed though flow meter
+float target_volume = 23;                //Total desired volume
+float adjustment_volume = 0;             //Adjustment volume to take into account delays in solenoid closing. Subtracted from the current volume.
 
 #define btnRIGHT  0
 #define btnUP     1
@@ -92,7 +93,7 @@ void setup()
 void loop()
 {
 
-  while(current_volume < target_volume)
+  while(current_volume < (target_volume - adjustment_volume))
   { 
     dowork();
   }
