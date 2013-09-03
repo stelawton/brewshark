@@ -103,6 +103,10 @@ void loop()
   lcd.setCursor(0,1);
   lcd.print("   TARGET HIT   ");
   
+  //Debug Messaging
+  Serial.println("  VALVE CLOSED  ");
+  Serial.println("   TARGET HIT   ");
+  
   digitalWrite(SOLENOIDPIN,HIGH);      //Close solenoid
 }
 
@@ -148,13 +152,17 @@ int read_LCD_buttons()
 void dowork()
 {
 
-  Serial.print("Freq: "); Serial.println(flowrate);
-  Serial.print("Pulses: "); Serial.println(pulses, DEC);
+  //Serial.print("Freq: "); Serial.println(flowrate);        //Uncomment these two lines to monitor the freq/pulses
+  //Serial.print("Pulses: "); Serial.println(pulses, DEC);
   float liters = pulses;
   liters /= 7.5;
   liters /= 60.0;
   
   current_volume = liters;
+  
+  //Debug Messaging
+  Serial.print("Cur: "); Serial.println(current_volume);
+  Serial.print("Tar: "); Serial.println(target_volume);
   
   //Print the target volume value in litres
   lcd.setCursor(11,0);
