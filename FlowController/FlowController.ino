@@ -81,7 +81,7 @@ void setup()
 
   printBanner(2000);                       // show banner for 2 seconds
   
-  clearLCD();
+  lcd.clear();
   
   printLabels();
   
@@ -108,14 +108,6 @@ void loop()
   Serial.println("   TARGET HIT   ");
   
   digitalWrite(SOLENOIDPIN,HIGH);      //Close solenoid
-}
-
-void clearLCD()
-{
-  lcd.setCursor(0,0);                      
-  lcd.print("                ");
-  lcd.setCursor(0,1);
-  lcd.print("                ");
 }
 
 void printBanner(int bannerdelay)
@@ -190,6 +182,7 @@ void dowork()
   case btnLEFT:
     {
       digitalWrite(SOLENOIDPIN,LOW);       //START FLOW
+      Serial.println("Solenoid Open");
       break;
     }
 
