@@ -23,7 +23,7 @@ float adjustment_volume = 0;             //Adjustment volume to take into accoun
 
 #define hltSIZE   50                       //Size of the Hot Liquor Tun in litres
 
-#define SOLENOIDPIN 1                      //Solenoid relay on Pin 1
+#define SOLENOIDPIN 13                      //Solenoid relay on Pin 1
 #define FLOWSENSORPIN 2                    //Flow sensore on Pin 2
 
 // count how many pulses
@@ -71,11 +71,12 @@ void setup()
   Serial.begin(9600);
   Serial.print("Flow sensor test!");
   
+  digitalWrite(SOLENOIDPIN,LOW);           //ACTIVE HIGH RELAY PUT THIS FIRST TO ENSURE PIN IS IN CORRECT STATE BEFORE WE INIT IT
   digitalWrite(FLOWSENSORPIN, HIGH);
-  digitalWrite(SOLENOIDPIN,HIGH); //ACTIVE LOW RELAY PUT THIS FIRST TO ENSURE PIN IS IN CORRECT STATE BEFORE WE INIT IT
-  
-  pinMode(FLOWSENSORPIN, INPUT);
+
   pinMode(SOLENOIDPIN, OUTPUT);
+  pinMode(FLOWSENSORPIN, INPUT);
+
   
   lcd.begin(16, 2);                        // start the library
 
@@ -97,6 +98,8 @@ void loop()
   { 
     dowork();
   }
+  
+  digitalWrite(SOLENOIDPIN,LOW);          //Close solenoid
 
   lcd.setCursor(0,0);
   lcd.print("  VALVE CLOSED  ");
@@ -106,8 +109,7 @@ void loop()
   //Debug Messaging
   Serial.println("  VALVE CLOSED  ");
   Serial.println("   TARGET HIT   ");
-  
-  digitalWrite(SOLENOIDPIN,HIGH);      //Close solenoid
+
 }
 
 void printBanner(int bannerdelay)
@@ -131,12 +133,21 @@ void printLabels()
 int read_LCD_buttons()
 {
   adc_key_in = analogRead(0);
+  /*  OLD BUTTONS at 3.3V
   if (adc_key_in > 1000) return btnNONE;
   if (adc_key_in < 50)   return btnRIGHT; 
   if (adc_key_in < 195)  return btnSELECT;
   if (adc_key_in < 380)  return btnUP;
   if (adc_key_in < 555)  return btnDOWN;
-  if (adc_key_in < 790)  return btnLEFT;  
+  if (adc_key_in < 790)  return btnLEFT; 
+ */
+
+  if (adc_key_in < 50)   return btnRIGHT; 
+  if (adc_key_in > 1000 && adc_key_in < 1050) return btnNONE;
+  if (adc_key_in > 130 && adc_key_in < 160)  return btnUP;
+  if (adc_key_in > 300 && adc_key_in < 350)  return btnDOWN;
+  if (adc_key_in > 480 && adc_key_in < 520)  return btnLEFT;  
+  if (adc_key_in > 700 && adc_key_in < 800)  return btnSELECT; 
 
   return btnNONE;
 }
@@ -175,14 +186,26 @@ void dowork()
   {
   case btnRIGHT:
     {
-      current_volume += 0.01;       //manually simulate flow
+     if (digitalRead(SOLENOIDPIN == HIGH))
+     {
+             digitalWrite(SOLENOIDPIN,LOW);       //STOP FLOW
+     }
+      
+
+      Serial.println("Solenoid Closed");
       break;
     }
 
   case btnLEFT:
     {
-      digitalWrite(SOLENOIDPIN,LOW);       //START FLOW
+     if (digitalRead(SOLENOIDPIN == LOW))
+     {
+             digitalWrite(SOLENOIDPIN,HIGH);       //START FLOW
+     }
+      
+
       Serial.println("Solenoid Open");
+      
       break;
     }
 
