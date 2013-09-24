@@ -23,7 +23,7 @@ float adjustment_volume = 0;             //Adjustment volume to take into accoun
 
 #define hltSIZE   50                       //Size of the Hot Liquor Tun in litres
 
-#define SOLENOIDPIN 13                      //Solenoid relay on Pin 1
+#define SOLENOIDPIN 13                      //Solenoid relay on Pin 13
 #define FLOWSENSORPIN 2                    //Flow sensore on Pin 2
 
 // count how many pulses
